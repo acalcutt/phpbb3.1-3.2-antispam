@@ -158,11 +158,11 @@ class CleantalkSFW
 	{			
 		for($i=0, $arr_count = sizeof($this->ip_array); $i < $arr_count; $i++)
 		{
-			$query = "SELECT 
+			$query = "SELECT TOP 1
 				network, mask, status
 				FROM ".$this->table_prefix."cleantalk_sfw
-				WHERE network = ".intval($this->ip_array[$i])." & mask
-				ORDER BY status DESC LIMIT 1";
+				WHERE network = ".intval($this->ip_array[$i])." AND mask IS NOT NULL
+				ORDER BY status DESC";
 			$this->universal_query($query);
 			$this->universal_fetch();
 
