@@ -84,9 +84,16 @@ class CleantalkSFW
 		$this->db = $db;
 	}
 	
-	public function universal_query($query)
+	public function universal_query($query,$limit=0)
 	{
-		$this->db_result = $this->db->sql_query($query);
+		if( $limit )
+		{
+			$this->db_result = $this->db->sql_query_limit($query, $limit);
+		}
+		else
+		{
+			$this->db_result = $this->db->sql_query($query);
+		}
 	}
 	
 	public function universal_fetch()
@@ -158,12 +165,13 @@ class CleantalkSFW
 	{			
 		for($i=0, $arr_count = sizeof($this->ip_array); $i < $arr_count; $i++)
 		{
-			$query = "SELECT TOP 1
+			$query = "SELECT 
 				network, mask, status
 				FROM ".$this->table_prefix."cleantalk_sfw
 				WHERE network = ".intval($this->ip_array[$i])." AND mask IS NOT NULL
 				ORDER BY status DESC";
-			$this->universal_query($query);
+			$limit = 1;
+			$this->universal_query($query, $limit);
 			$this->universal_fetch();
 
 			if($this->db_result_data && $this->db_result_data['status'] == 0)
